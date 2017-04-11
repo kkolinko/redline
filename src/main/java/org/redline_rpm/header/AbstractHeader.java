@@ -183,6 +183,9 @@ public abstract class AbstractHeader {
 		offset += shift;
 		
 		final int size = entry.size();
+		if ( size == 0) {
+			throw new RuntimeException("Cannot write entry when its size is 0. Entry: " + entry);
+		}
 		final ByteBuffer buffer = ByteBuffer.allocate( size);
 		entry.index( index, offset);
 		if ( entry.ready()) {
@@ -197,7 +200,11 @@ public abstract class AbstractHeader {
 	public void writePending( final FileChannel channel) {
 		for ( Entry< ?> entry : pending.keySet()) {
 			try {
-				ByteBuffer data = ByteBuffer.allocate( entry.size());
+				int size = entry.size();
+				if ( size == 0) {
+					throw new RuntimeException("Cannot write entry when its size is 0. Entry: " + entry);
+				}
+				ByteBuffer data = ByteBuffer.allocate( size);
 				entry.write( data);
 				channel.position( Lead.LEAD_SIZE + HEADER_HEADER_SIZE + count() * ENTRY_SIZE + pending.get( entry));
 				Util.empty( channel, ( ByteBuffer) data.flip());
