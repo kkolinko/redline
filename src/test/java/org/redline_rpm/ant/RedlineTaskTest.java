@@ -7,6 +7,7 @@ import java.nio.channels.Channels;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -491,8 +492,9 @@ public class RedlineTaskTest extends TestBase {
 
 		assertArrayEquals("Entry value : " + tag.getName(), expected, values);
 	}
-	static final SimpleDateFormat fmt = new SimpleDateFormat("EEE MMM dd yyyy");
 	private void assertDateEntryHeaderEqualsAt(String expected, Format format, AbstractHeader.Tag tag, int size, int pos) {
+		final SimpleDateFormat fmt = new SimpleDateFormat("EEE MMM dd yyyy", Locale.ENGLISH);
+
 		assertNotNull("null format", format);
 		AbstractHeader.Entry< ?> entry = format.getHeader().getEntry(tag);
 		assertNotNull("Entry not found : " + tag.getName(), entry);
