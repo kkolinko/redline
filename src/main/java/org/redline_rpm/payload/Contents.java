@@ -799,14 +799,14 @@ public class Contents {
 
 	/**
 	 * Comparator that orders files in the CPIO archive by their file name
-	 * as present in th header.
+	 * as present in the header.
 	 */
 	private static class HeaderComparator implements Comparator< CpioHeader> {
 		public int compare( final CpioHeader one, final CpioHeader two) {
 			return one.getName().compareTo( two.getName());
 		}
-		public boolean equals( final CpioHeader one, final CpioHeader two) {
-			return one.getName().equals( two.getName());
+		public boolean equals( final Object other) {
+			return other != null && other.getClass() == getClass();
 		}
 	}
 }
