@@ -1371,7 +1371,7 @@ public class Builder {
 				in.close();
 			} else if ( object instanceof CharSequence) {
 				final CharSequence target = ( CharSequence) object;
-				total += compressor.write( ByteBuffer.wrap( String.valueOf( target).getBytes()));
+				total += compressor.write( ByteBuffer.wrap( String.valueOf( target).getBytes("UTF-8")));
 				total += header.skip( compressor, target.length());
 			}
 		}

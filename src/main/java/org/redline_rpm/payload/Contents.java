@@ -557,7 +557,7 @@ public class Contents {
 				if ( object instanceof File) array[ x] = ( int) (( File) object).length();
 				else if ( object instanceof URL) array[ x] = (( URL) object).openConnection().getContentLength();
 				else if ( header.getType() == DIR) array[ x] = 4096;
-				else if ( header.getType() == SYMLINK) array[ x] = (( String) object).length();
+				else if ( header.getType() == SYMLINK) array[ x] = (( String) object).getBytes("UTF-8").length;
 				++x;
 			}
 		} catch ( IOException e) {
