@@ -5,6 +5,12 @@ import org.apache.tools.ant.types.EnumeratedAttribute;
 import static org.redline_rpm.header.Flags.EQUAL;
 import static org.redline_rpm.header.Flags.GREATER;
 import static org.redline_rpm.header.Flags.LESS;
+import static org.redline_rpm.header.Flags.SCRIPT_POST;
+import static org.redline_rpm.header.Flags.SCRIPT_POSTTRANS;
+import static org.redline_rpm.header.Flags.SCRIPT_POSTUN;
+import static org.redline_rpm.header.Flags.SCRIPT_PRE;
+import static org.redline_rpm.header.Flags.SCRIPT_PRETRANS;
+import static org.redline_rpm.header.Flags.SCRIPT_PREUN;
 
 /**
  * Object describing a dependency on a
@@ -15,6 +21,7 @@ public class Depends {
 	protected String name;
 	protected String version = "";
 	protected int comparison = 0;
+	protected int scopeFlag = 0;
 
 	public void setName( String name) {
 		this.name = name;
@@ -49,6 +56,19 @@ public class Depends {
 		return this.comparison;
 	}
 
+	public int getFlags() {
+		return getComparison() | scopeFlag;
+	}
+
+	public void setScope(String scope) {
+		scopeFlag = 0;
+		if ( scope != null && scope.length() > 0) {
+			for ( String scopeValue : scope.split(",")) {
+				scopeFlag = Scope.valueOf(scopeValue.trim()).getFlag();
+			}
+		}
+	}
+
 	public void setVersion( String version) {
 		if ( version != null && version.length() > 0) {
 			try {
@@ -71,6 +91,28 @@ public class Depends {
 	public static class ComparisonEnum extends EnumeratedAttribute {
 		public String[] getValues() {
 			return new String[] {"equal", "greater", "greater|equal", "less", "less|equal"};
+		}
+	}
+
+	/**
+	 * Values supported for Requires(scope) spec file tag.
+	 */
+	private static enum Scope {
+		pre(SCRIPT_PRE),
+		post(SCRIPT_POST),
+		preun(SCRIPT_PREUN),
+		postun(SCRIPT_POSTUN),
+		pretrans(SCRIPT_PRETRANS),
+		posttrans(SCRIPT_POSTTRANS);
+
+		private final int flag;
+
+		private Scope(final int flag) {
+			this.flag = flag;
+		}
+
+		public int getFlag() {
+			return flag;
 		}
 	}
 }

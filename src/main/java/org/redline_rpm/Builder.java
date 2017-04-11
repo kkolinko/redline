@@ -157,16 +157,14 @@ public class Builder {
 	}
 	
 	/**
-	 * Adds a dependency to the RPM package. This dependency version will be marked as the exact
-	 * requirement, and the package will require the named dependency with exactly this version at
-	 * install time.
+	 * Adds a dependency to the RPM package.
 	 *
 	 * @param name the name of the dependency.
-	 * @param comparison the comparison flag.
+	 * @param flags flags, see org.redline_rpm.header.Flags (e.g. "GREATER | EQUAL")
 	 * @param version the version identifier.
 	 */
-	public void addDependency( final String name, final int comparison, final String version ) {
-		requires.add(new Dependency(name, version, comparison));
+	public void addDependency( final String name, final int flags, final String version ) {
+		requires.add(new Dependency(name, version, flags));
 	}
 
 	/**
@@ -198,16 +196,14 @@ public class Builder {
 	}
 
 	/**
-	 * Adds a dependency to the RPM package. This dependency version will be marked as the exact
-	 * requirement, and the package will require the named dependency with exactly this version at
-	 * install time.
+	 * Adds a dependency to the RPM package.
 	 *
 	 * @param name the name of the dependency.
 	 * @param version the version identifier.
-	 * @param flag the file flags
+	 * @param flags flags, see org.redline_rpm.header.Flags (e.g. "GREATER | EQUAL")
 	 */
-	protected void addDependency( final CharSequence name, final CharSequence version, final int flag) {
-		requires.add(new Dependency(name.toString(), version.toString(), flag));
+	protected void addDependency( final CharSequence name, final CharSequence version, final int flags) {
+		requires.add(new Dependency(name.toString(), version.toString(), flags));
 	}
 	
 	/**

@@ -206,7 +206,7 @@ public class RedlineTask extends Task {
 				builder.addFile( ghost.getPath(), null, ghost.getFilemode(), ghost.getDirmode(), ghost.getDirective(), ghost.getUsername(), ghost.getGroup());
 			}
 			for ( Link link : links) builder.addLink( link.getPath(), link.getTarget(), link.getPermissions());
-			for ( Depends dependency : depends) builder.addDependency( dependency.getName(), dependency.getComparison(), dependency.getVersion());
+			for ( Depends dependency : depends) builder.addDependency( dependency.getName(), dependency.getFlags(), dependency.getVersion());
 			for ( Provides provision : moreProvides) builder.addProvides( provision.getName(), provision.getVersion());
 			for ( Conflicts conflict : conflicts) builder.addConflicts( conflict.getName(), conflict.getComparison(), conflict.getVersion());
 			for ( Obsoletes obsoletion : obsoletes) builder.addObsoletes( obsoletion.getName(), obsoletion.getComparison(), obsoletion.getVersion());
