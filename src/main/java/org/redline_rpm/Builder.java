@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
