@@ -50,6 +50,14 @@ public class Depends {
 	}
 
 	public void setVersion( String version) {
+		if ( version != null && version.length() > 0) {
+			try {
+				Integer.parseInt(version.substring(0,1));
+			} catch ( NumberFormatException ex) {
+				throw new IllegalArgumentException("version [" + version
+						+ "] does not start with a digit");
+			}
+		}
 		this.version = version;
 	}
 
