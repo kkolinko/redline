@@ -132,7 +132,7 @@ lineloop:
 	 */
 	public List<ChangelogEntry> parse(InputStream stream) throws IOException, ChangelogParseException 
 	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		String line = null;
 		List<String> lines = new ArrayList<String>();
 		while ((line = reader.readLine()) != null) {
