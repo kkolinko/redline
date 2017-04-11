@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.redline_rpm.Builder;
