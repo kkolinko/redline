@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -30,7 +32,6 @@ import static org.redline_rpm.header.Signature.SignatureTag.RSAHEADER;
  */
 public class SignatureGenerator {
 
-    protected static final int SIGNATURE_SIZE = 287;
     protected final boolean enabled;
     protected Entry< byte[]> headerOnlyRSAEntry;
     protected Entry< byte[]> headerAndPayloadPGPEntry;
@@ -60,14 +61,27 @@ public class SignatureGenerator {
         }
     }
 
-    @SuppressWarnings("unchecked")
-	public void prepare( Signature signature ) {
-        if ( enabled ) {
-            headerOnlyRSAEntry = ( Entry< byte[]> ) signature.addEntry( RSAHEADER, SIGNATURE_SIZE );
-            headerAndPayloadPGPEntry = ( Entry< byte[]> ) signature.addEntry( LEGACY_PGP, SIGNATURE_SIZE );
-        }
-    }
+	@SuppressWarnings("unchecked")
+	public void prepare(Signature signature) {
+		if (enabled) {
+			// Do a trial run to determine the size of a signature packet
+			// It depends on signature algorithm and on key length
+			int SIGNATURE_SIZE;
+			try {
+				WritableChannelWrapper output = new WritableChannelWrapper(new NoopChannel());
+				Key<byte[]> key = output.start(privateKey, getAlgorithm());
+				output.write(ByteBuffer.allocate(8196));
+				byte[] sigPacket = output.finish(key);
+				SIGNATURE_SIZE = sigPacket.length;
+				output.close();
+			} catch (IOException ex) {
+				throw new RuntimeException(ex.getMessage(), ex);
+			}
 
+			headerOnlyRSAEntry = (Entry<byte[]>) signature.addEntry(RSAHEADER, SIGNATURE_SIZE);
+			headerAndPayloadPGPEntry = (Entry<byte[]>) signature.addEntry(LEGACY_PGP, SIGNATURE_SIZE);
+		}
+	}
 
     public void startBeforeHeader( WritableChannelWrapper output ) {
         if ( enabled ) {
@@ -168,4 +182,22 @@ public class SignatureGenerator {
     protected int getAlgorithm() {
         return privateKey != null ? privateKey.getPublicKeyPacket().getAlgorithm() : 0;
     }
+
+	private static class NoopChannel implements WritableByteChannel {
+		@Override
+		public boolean isOpen() {
+			return true;
+		}
+
+		@Override
+		public void close() throws IOException {
+		}
+
+		@Override
+		public int write(ByteBuffer src) throws IOException {
+			int length = src.remaining();
+			src.position(src.position() + length);
+			return length;
+		}
+	}
 }
